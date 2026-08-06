@@ -4,7 +4,7 @@
 Controle de Manejo Sanitário e Vacinação
 
 ## Repositório Público
-[Link do Repositório]([COLE_AQUI_O_LINK](https://github.com/AyramViviane/projeto-software-agro-controle-de-manejo-sanitario-e-vacinacao/edit/main/README.md))
+[Link do Repositório][https://github.com/AyramViviane/projeto-software-agro-controle-de-manejo-sanitario-e-vacinacao/edit/main/README.md]
 
 ## Quadro Kanban (GitHub Projects)
 [Link do Kanban](COLE_AQUI_O_LINK)
