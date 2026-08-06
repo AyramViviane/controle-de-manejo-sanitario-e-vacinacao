@@ -1,7 +1,7 @@
 # Projeto – Romaneio de Pesagem de Bovinos
 
 ## Tema Escolhido
-Romaneio de Pesagem de Bovinos
+Controle de Manejo Sanitário e Vacinação
 
 ## Repositório Público
 [Link do Repositório]((https://github.com/AyramViviane/projeto-software-agro-controle-de-manejo-sanitario-e-vacinacao/edit/main/README.md))
