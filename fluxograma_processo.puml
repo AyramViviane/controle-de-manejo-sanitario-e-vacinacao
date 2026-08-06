@@ -1,6 +1,7 @@
 ' Autor: Guilherme da Silva
 @startuml
-title Fluxograma do Processo de Manejo Sanitário
+title Fluxograma do Processo de Manejo Sanitário 
+
 
 start
 
@@ -13,6 +14,7 @@ start
 if (Vacinação realizada?) then (Sim)
 
 :Atualizar histórico sanitário;
+
 
 :Verificar período de carência;
 
