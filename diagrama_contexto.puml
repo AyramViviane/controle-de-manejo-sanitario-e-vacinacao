@@ -1,0 +1,15 @@
+@startuml
+title Diagrama de Contexto - Controle de Manejo Sanitário e Vacinação
+
+left to right direction
+
+actor "Produtor Rural" as Produtor
+actor "Veterinário" as Vet
+
+rectangle "Sistema de Controle de Manejo Sanitário e Vacinação" {
+}
+
+Produtor --> "Sistema de Controle de Manejo Sanitário e Vacinação" : Cadastra lotes\nRegistra vacinas\nConsulta histórico
+Vet --> "Sistema de Controle de Manejo Sanitário e Vacinação" : Atualiza informações sanitárias
+
+@enduml
