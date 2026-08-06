@@ -1,0 +1,30 @@
+@startuml
+title Fluxograma do Processo de Manejo Sanitário
+
+start
+
+:Cadastrar lote;
+
+:Cadastrar animais;
+
+:Registrar vacinação;
+
+if (Vacinação realizada?) then (Sim)
+
+:Atualizar histórico sanitário;
+
+:Verificar período de carência;
+
+:Gerar alerta da próxima vacinação;
+
+else (Não)
+
+:Exibir pendência;
+
+endif
+
+:Consultar histórico;
+
+stop
+
+@enduml
