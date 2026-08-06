@@ -4,7 +4,7 @@
 Controle de Manejo Sanitário e Vacinação
 
 ## Repositório Público
-[https://github.com/AyramViviane/projeto-software-agro-controle-de-manejo-sanitario-e-vacinacao/edit/main/README.md]
+[https://github.com/AyramViviane/controle-de-manejo-sanitario-e-vacinacao/edit/main/README.md]
 
 ## Quadro Kanban (GitHub Projects)
 [Link do Kanban](COLE_AQUI_O_LINK)
@@ -16,4 +16,4 @@ Controle de Manejo Sanitário e Vacinação
 | Kezia Laís | Cadastro de Lotes |
 | Ayram Viviane | Alerta de vacinas e período de carência |
 | Guilherme da Silva | Controle de Vacinação |
-| Sthefany Campos |  |
+| Sthefany Campos | Consulta do Histórico Sanitário dos Lotes |
