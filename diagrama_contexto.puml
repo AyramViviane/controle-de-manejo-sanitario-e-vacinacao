@@ -1,1 +1,19 @@
 ' Autor: Ayram Viviane
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Produtor Rural" as produtor
+actor "Veterinário" as veterinario
+
+rectangle "Sistema de Controle\nSanitário e Vacinação" as sistema
+
+rectangle "Órgão de Defesa\nAgropecuária" as defesa
+
+produtor --> sistema : Cadastrar animais\nRegistrar vacinação\nConsultar histórico
+
+veterinario --> sistema : Registrar tratamentos\nConsultar informações
+
+sistema --> defesa : Enviar relatórios\nquando necessário
+
+@enduml
