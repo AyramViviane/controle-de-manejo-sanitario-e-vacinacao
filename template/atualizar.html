@@ -1,0 +1,37 @@
+
+
+{% extends "base.html" %}
+
+{% block title %}Atualizar{% endblock %}
+
+{% block content %}
+
+<h2>Atualizar cadastro</h2>
+
+<form method="POST">
+
+    <label for="identificacao">Identificação do animal:</label>
+    <input type="text"
+           id="identificacao"
+           name="identificacao">
+
+    <label for="especie">Espécie:</label>
+    <input type="text"
+           id="especie"
+           name="especie">
+
+    <label for="raca">Raça:</label>
+    <input type="text"
+           id="raca"
+           name="raca">
+
+    <label for="data_nascimento">Data de nascimento:</label>
+    <input type="date"
+           id="data_nascimento"
+           name="data_nascimento">
+
+    <button type="submit">Salvar alterações</button>
+
+</form>
+
+{% endblock %}
