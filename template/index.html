@@ -1,19 +1,89 @@
+
 {% extends "base.html" %}
 
 {% block title %}Início{% endblock %}
 
 {% block content %}
 
-<h2>Bem-vindo ao Sistema Agro!</h2>
+<section class="hero">
 
-<p>
-    Sistema destinado ao controle e manejo sanitário
-    e ao acompanhamento da vacinação dos animais.
-</p>
+    <div class="hero-content">
 
-<p>
-    Utilize o menu acima para acessar as funcionalidades
-    do sistema.
-</p>
+        <span class="page-tag">
+            SISTEMA DE GESTÃO RURAL
+        </span>
+
+        <h2>
+            Controle sanitário<br>
+            da sua propriedade.
+        </h2>
+
+        <p>
+            Gerencie animais, acompanhe vacinações
+            e mantenha o histórico sanitário organizado
+            em um único sistema.
+        </p>
+
+        <div class="hero-actions">
+
+            <a
+                href="{{ url_for('vacinacao') }}"
+                class="button button-primary"
+            >
+                Registrar vacinação
+            </a>
+
+            <a
+                href="{{ url_for('cadastro') }}"
+                class="button button-secondary"
+            >
+                Cadastrar animal
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="dashboard">
+
+    <div class="dashboard-card">
+
+        <span class="dashboard-icon">🐄</span>
+
+        <div>
+            <span>Animais</span>
+            <strong>0</strong>
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <span class="dashboard-icon">💉</span>
+
+        <div>
+            <span>Vacinações</span>
+            <strong>0</strong>
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <span class="dashboard-icon">📋</span>
+
+        <div>
+            <span>Registros</span>
+            <strong>0</strong>
+        </div>
+
+    </div>
+
+</section>
 
 {% endblock %}

@@ -2,36 +2,92 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}Sistema Agro{% endblock %}</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
+    <title>
+        {% block title %}Sistema Agro{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
 </head>
+
 
 <body>
 
-    <header>
-        <h1>Sistema de Manejo Sanitário</h1>
+<header class="header">
 
-        <nav>
-            <a href="{{ url_for('inicio') }}">Início</a>
-            <a href="{{ url_for('cadastro') }}">Cadastro</a>
-            <a href="{{ url_for('listagem') }}">Listagem</a>
-            <a href="{{ url_for('atualizar') }}">Atualizar</a>
+    <div class="container header-content">
+
+        <div class="logo">
+
+            <span class="logo-icon">🌱</span>
+
+            <div>
+                <h1>AgroSan</h1>
+                <span>Controle Sanitário</span>
+            </div>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <a href="{{ url_for('inicio') }}">
+                Início
+            </a>
+
+            <a href="{{ url_for('cadastro') }}">
+                Animais
+            </a>
+
+            <a href="{{ url_for('vacinacao') }}">
+                Vacinação
+            </a>
+
+            <a href="{{ url_for('listagem') }}">
+                Registros
+            </a>
+
         </nav>
-    </header>
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    </div>
 
-    <footer>
-        <p>Sistema de Controle e Manejo Sanitário e Vacinação</p>
-    </footer>
+</header>
+
+
+<main class="container main-content">
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container">
+
+        <p>
+            AgroSan — Sistema de Controle e Manejo Sanitário
+        </p>
+
+        <span>
+            Projeto acadêmico
+        </span>
+
+    </div>
+
+</footer>
 
 </body>
 
