@@ -13,6 +13,26 @@ app = Flask(__name__)
 def inicio():
     return render_template("index.html")
 
+#Cadastro de Lotes
+
+@app.route('/lotes', methods=['GET', 'POST'])
+def lotes():
+    if request.method == "POST":
+        codigo = request.form.get("codigo")
+        quantidade = request.form.get("quantidade")
+        especie = request.form.get("especie")
+        data_formacao = request.form.get("data_formacao")
+
+        print("Novo lote cadastrado:")
+        print(f"Código: {codigo}")
+        print(f"Quantidade de animais: {quantidade}")
+        print(f"Espécie: {especie}")
+        print(f"Data de formação: {data_formacao}")
+
+        return redirect(url_for("listagem"))
+
+    return render_template("lotes.html")
+
 
 # Cadastro de animal
 @app.route("/cadastro", methods=["GET", "POST"])
