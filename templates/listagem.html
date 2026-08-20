@@ -30,4 +30,41 @@
 
 </table>
 
+<!-- ===================== INÍCIO: CONTROLE DE VACINAÇÃO (Guilherme) ===================== -->
+
+<h2>Vacinações registradas</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Animal</th>
+            <th>Vacina</th>
+            <th>Data da aplicação</th>
+            <th>Próxima dose</th>
+            <th>Responsável</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if vacinacoes %}
+            {% for v in vacinacoes %}
+            <tr>
+                <td>{{ v.animal }}</td>
+                <td>{{ v.vacina }}</td>
+                <td>{{ v.data_aplicacao }}</td>
+                <td>{{ v.proxima_dose }}</td>
+                <td>{{ v.responsavel }}</td>
+                <td><a href="{{ url_for('atualizar_vacinacao_route', id=v.id) }}">Editar</a></td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6">Nenhuma vacinação registrada</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<!-- ===================== FIM: CONTROLE DE VACINAÇÃO ===================== -->
+
 {% endblock %}

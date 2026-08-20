@@ -7,6 +7,24 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
+vacinacoes = []
+
+def criar_vacinacao(dados):
+    dados["id"] = len(vacinacoes) + 1
+    vacinacoes.append(dados)
+    return dados
+
+def listar_vacinacoes():
+    return vacinacoes
+
+def buscar_vacinacao(id):
+    return next((v for v in vacinacoes if v["id"] == id), None)
+
+def atualizar_vacinacao(id, dados):
+    registro = buscar_vacinacao(id)
+    if registro:
+        registro.update(dados)
+    return registro
 
 # Página inicial
 @app.route("/")
@@ -63,38 +81,53 @@ def cadastro():
 def vacinacao():
 
     if request.method == "POST":
-
-        animal = request.form.get("animal")
-        vacina = request.form.get("vacina")
-        lote = request.form.get("lote")
-        fabricante = request.form.get("fabricante")
-        data_aplicacao = request.form.get("data_aplicacao")
-        proxima_dose = request.form.get("proxima_dose")
-        dose = request.form.get("dose")
-        responsavel = request.form.get("responsavel")
-        observacoes = request.form.get("observacoes")
-
-        print("Registro de vacinação:")
-        print(f"Animal: {animal}")
-        print(f"Vacina: {vacina}")
-        print(f"Lote: {lote}")
-        print(f"Fabricante: {fabricante}")
-        print(f"Data da aplicação: {data_aplicacao}")
-        print(f"Próxima dose: {proxima_dose}")
-        print(f"Dose: {dose}")
-        print(f"Responsável: {responsavel}")
-        print(f"Observações: {observacoes}")
+        criar_vacinacao({
+            "animal": request.form.get("animal"),
+            "vacina": request.form.get("vacina"),
+            "lote": request.form.get("lote"),
+            "fabricante": request.form.get("fabricante"),
+            "data_aplicacao": request.form.get("data_aplicacao"),
+            "proxima_dose": request.form.get("proxima_dose"),
+            "dose": request.form.get("dose"),
+            "responsavel": request.form.get("responsavel"),
+            "observacoes": request.form.get("observacoes"),
+        })
 
         return redirect(url_for("listagem"))
 
     return render_template("vacinacao.html")
 
 
+# Edição de um registro de vacinação
+@app.route("/vacinacao/atualizar/<int:id>", methods=["GET", "POST"])
+def atualizar_vacinacao_route(id):
+
+    registro = buscar_vacinacao(id)
+
+    if registro is None:
+        return redirect(url_for("listagem"))
+
+    if request.method == "POST":
+        atualizar_vacinacao(id, {
+            "animal": request.form.get("animal"),
+            "vacina": request.form.get("vacina"),
+            "lote": request.form.get("lote"),
+            "fabricante": request.form.get("fabricante"),
+            "data_aplicacao": request.form.get("data_aplicacao"),
+            "proxima_dose": request.form.get("proxima_dose"),
+            "dose": request.form.get("dose"),
+            "responsavel": request.form.get("responsavel"),
+            "observacoes": request.form.get("observacoes"),
+        })
+
+        return redirect(url_for("listagem"))
+
+    return render_template("vacinacao.html", registro=registro)
+# Listagem
 # Listagem
 @app.route("/listagem")
 def listagem():
-    return render_template("listagem.html")
-
+    return render_template("listagem.html", vacinacoes=listar_vacinacoes())
 
 # Atualização
 @app.route("/atualizar")

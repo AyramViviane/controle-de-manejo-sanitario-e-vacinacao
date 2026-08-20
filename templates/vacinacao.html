@@ -35,13 +35,14 @@
                         Animal
                     </label>
 
-                    <input
-                        type="text"
-                        id="animal"
-                        name="animal"
-                        placeholder="Ex.: BR-001"
-                        required
-                    >
+          <input
+    type="text"
+    id="animal"
+    name="animal"
+    placeholder="Ex.: BR-001"
+    value="{{ registro.animal if registro else '' }}"
+    required
+>
 
                     <small>
                         Informe o número ou identificação do animal.
@@ -58,29 +59,11 @@
 
                     <select id="vacina" name="vacina" required>
 
-                        <option value="">
-                            Selecione uma vacina
-                        </option>
-
-                        <option value="febre_aftosa">
-                            Febre Aftosa
-                        </option>
-
-                        <option value="brucelose">
-                            Brucelose
-                        </option>
-
-                        <option value="raiva">
-                            Raiva
-                        </option>
-
-                        <option value="clostridioses">
-                            Clostridioses
-                        </option>
-
-                        <option value="outra">
-                            Outra
-                        </option>
+                       <option value="febre_aftosa" {% if registro and registro.vacina == 'febre_aftosa' %}selected{% endif %}>Febre Aftosa</option>
+<option value="brucelose" {% if registro and registro.vacina == 'brucelose' %}selected{% endif %}>Brucelose</option>
+<option value="raiva" {% if registro and registro.vacina == 'raiva' %}selected{% endif %}>Raiva</option>
+<option value="clostridioses" {% if registro and registro.vacina == 'clostridioses' %}selected{% endif %}>Clostridioses</option>
+<option value="outra" {% if registro and registro.vacina == 'outra' %}selected{% endif %}>Outra</option>
 
                     </select>
 
@@ -108,6 +91,7 @@
                         id="fabricante"
                         name="fabricante"
                         placeholder="Nome do fabricante"
+                        value="{{ registro.<campo> if registro else '' }}"
                     >
 
                 </div>
@@ -124,6 +108,7 @@
                         id="lote"
                         name="lote"
                         placeholder="Número do lote"
+                        value="{{ registro.<campo> if registro else '' }}"
                     >
 
                 </div>
@@ -140,6 +125,7 @@
                         id="dose"
                         name="dose"
                         placeholder="Ex.: 2 ml"
+                        value="{{ registro.<campo> if registro else '' }}"
                         required
                     >
 
@@ -166,6 +152,7 @@
                         type="date"
                         id="data_aplicacao"
                         name="data_aplicacao"
+                        value="{{ registro.<campo> if registro else '' }}"
                         required
                     >
 
@@ -182,6 +169,7 @@
                         type="date"
                         id="proxima_dose"
                         name="proxima_dose"
+                        value="{{ registro.<campo> if registro else '' }}"
                     >
 
                 </div>
@@ -198,6 +186,7 @@
                         id="responsavel"
                         name="responsavel"
                         placeholder="Nome do responsável"
+                        value="{{ registro.<campo> if registro else '' }}"
                         required
                     >
 
@@ -218,11 +207,8 @@
                     Informações adicionais
                 </label>
 
-                <textarea
-                    id="observacoes"
-                    name="observacoes"
-                    rows="5"
-                    placeholder="Informe alguma observação sobre a aplicação..."
+                
+                   <textarea id="observacoes" name="observacoes" rows="5" placeholder="Informe alguma observação sobre a aplicação...">{{ registro.observacoes if registro else '' }}</textarea>
                 ></textarea>
 
             </div>
@@ -240,12 +226,10 @@
             </a>
 
             <button
-                type="submit"
-                class="button button-primary"
-            >
-                Registrar vacinação
-            </button>
-
+              type="submit" class="button button-primary">
+    {{ "Salvar alterações" if registro else "Registrar vacinação" }}
+</button>
+            
         </div>
 
     </form>
