@@ -67,4 +67,44 @@
 
 <!-- ===================== FIM: CONTROLE DE VACINAÇÃO ===================== -->
 
+
+
+
+
+
+<h2>Manejos Sanitários Registrados</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Animal</th>
+            <th>Tipo de Manejo</th>
+            <th>Data</th>
+            <th>Produto</th>
+            <th>Dose</th>
+            <th>Responsável</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if manejos %}
+            {% for m in manejos %}
+            <tr>
+                <td>{{ m.animal }}</td>
+                <td>{{ m.tipo_manejo }}</td>
+                <td>{{ m.data_manejo }}</td>
+                <td>{{ m.produto }}</td>
+                <td>{{ m.dose }}</td>
+                <td>{{ m.responsavel }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6">Nenhum manejo registrado</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<!-- ===================== FIM: CONTROLE DE REGISTROS ===================== -->
+
+
 {% endblock %}
