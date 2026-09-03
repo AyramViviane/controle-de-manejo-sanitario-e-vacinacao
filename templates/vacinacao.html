@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Registro de Vacinação{% endblock %}
@@ -23,6 +22,7 @@
 
     <form method="POST">
 
+        <!-- IDENTIFICAÇÃO -->
         <div class="form-section">
 
             <h3>Identificação</h3>
@@ -35,14 +35,8 @@
                         Animal
                     </label>
 
-          <input
-    type="text"
-    id="animal"
-    name="animal"
-    placeholder="Ex.: BR-001"
-    value="{{ registro.animal if registro else '' }}"
-    required
->
+                    <input type="text" id="animal" name="animal" placeholder="Ex.: BR-001"
+                        value="{{ registro['animal'] if registro else '' }}" required>
 
                     <small>
                         Informe o número ou identificação do animal.
@@ -59,11 +53,30 @@
 
                     <select id="vacina" name="vacina" required>
 
-                       <option value="febre_aftosa" {% if registro and registro.vacina == 'febre_aftosa' %}selected{% endif %}>Febre Aftosa</option>
-<option value="brucelose" {% if registro and registro.vacina == 'brucelose' %}selected{% endif %}>Brucelose</option>
-<option value="raiva" {% if registro and registro.vacina == 'raiva' %}selected{% endif %}>Raiva</option>
-<option value="clostridioses" {% if registro and registro.vacina == 'clostridioses' %}selected{% endif %}>Clostridioses</option>
-<option value="outra" {% if registro and registro.vacina == 'outra' %}selected{% endif %}>Outra</option>
+                        <option value="">Selecione uma vacina</option>
+
+                        <option value="febre_aftosa" {% if registro and registro['vacina']=='febre_aftosa' %}selected{%
+                            endif %}>
+                            Febre Aftosa
+                        </option>
+
+                        <option value="brucelose" {% if registro and registro['vacina']=='brucelose' %}selected{% endif
+                            %}>
+                            Brucelose
+                        </option>
+
+                        <option value="raiva" {% if registro and registro['vacina']=='raiva' %}selected{% endif %}>
+                            Raiva
+                        </option>
+
+                        <option value="clostridioses" {% if registro and registro['vacina']=='clostridioses'
+                            %}selected{% endif %}>
+                            Clostridioses
+                        </option>
+
+                        <option value="outra" {% if registro and registro['vacina']=='outra' %}selected{% endif %}>
+                            Outra
+                        </option>
 
                     </select>
 
@@ -74,6 +87,7 @@
         </div>
 
 
+        <!-- INFORMAÇÕES DA VACINA -->
         <div class="form-section">
 
             <h3>Informações da vacina</h3>
@@ -86,13 +100,8 @@
                         Fabricante
                     </label>
 
-                    <input
-                        type="text"
-                        id="fabricante"
-                        name="fabricante"
-                        placeholder="Nome do fabricante"
-                        value="{{ registro.<campo> if registro else '' }}"
-                    >
+                    <input type="text" id="fabricante" name="fabricante" placeholder="Nome do fabricante"
+                        value="{{ registro['fabricante'] if registro else '' }}">
 
                 </div>
 
@@ -103,13 +112,8 @@
                         Lote
                     </label>
 
-                    <input
-                        type="text"
-                        id="lote"
-                        name="lote"
-                        placeholder="Número do lote"
-                        value="{{ registro.<campo> if registro else '' }}"
-                    >
+                    <input type="text" id="lote" name="lote" placeholder="Número do lote"
+                        value="{{ registro['lote'] if registro else '' }}">
 
                 </div>
 
@@ -120,14 +124,8 @@
                         Dose aplicada
                     </label>
 
-                    <input
-                        type="text"
-                        id="dose"
-                        name="dose"
-                        placeholder="Ex.: 2 ml"
-                        value="{{ registro.<campo> if registro else '' }}"
-                        required
-                    >
+                    <input type="text" id="dose" name="dose" placeholder="Ex.: 2 ml"
+                        value="{{ registro['dose'] if registro else '' }}" required>
 
                 </div>
 
@@ -136,6 +134,7 @@
         </div>
 
 
+        <!-- APLICAÇÃO -->
         <div class="form-section">
 
             <h3>Aplicação</h3>
@@ -148,13 +147,8 @@
                         Data da aplicação
                     </label>
 
-                    <input
-                        type="date"
-                        id="data_aplicacao"
-                        name="data_aplicacao"
-                        value="{{ registro.<campo> if registro else '' }}"
-                        required
-                    >
+                    <input type="date" id="data_aplicacao" name="data_aplicacao"
+                        value="{{ registro['data_aplicacao'] if registro else '' }}" required>
 
                 </div>
 
@@ -165,12 +159,8 @@
                         Próxima aplicação
                     </label>
 
-                    <input
-                        type="date"
-                        id="proxima_dose"
-                        name="proxima_dose"
-                        value="{{ registro.<campo> if registro else '' }}"
-                    >
+                    <input type="date" id="proxima_dose" name="proxima_dose"
+                        value="{{ registro['proxima_dose'] if registro else '' }}">
 
                 </div>
 
@@ -181,14 +171,8 @@
                         Responsável pela aplicação
                     </label>
 
-                    <input
-                        type="text"
-                        id="responsavel"
-                        name="responsavel"
-                        placeholder="Nome do responsável"
-                        value="{{ registro.<campo> if registro else '' }}"
-                        required
-                    >
+                    <input type="text" id="responsavel" name="responsavel" placeholder="Nome do responsável"
+                        value="{{ registro['responsavel'] if registro else '' }}" required>
 
                 </div>
 
@@ -197,6 +181,7 @@
         </div>
 
 
+        <!-- OBSERVAÇÕES -->
         <div class="form-section">
 
             <h3>Observações</h3>
@@ -207,29 +192,25 @@
                     Informações adicionais
                 </label>
 
-                
-                   <textarea id="observacoes" name="observacoes" rows="5" placeholder="Informe alguma observação sobre a aplicação...">{{ registro.observacoes if registro else '' }}</textarea>
-                ></textarea>
+                <textarea id="observacoes" name="observacoes" rows="5"
+                    placeholder="Informe alguma observação sobre a aplicação...">{{ registro['observacoes'] if registro else '' }}</textarea>
 
             </div>
 
         </div>
 
 
+        <!-- BOTÕES -->
         <div class="form-actions">
 
-            <a
-                href="{{ url_for('inicio') }}"
-                class="button button-secondary"
-            >
+            <a href="{{ url_for('inicio') }}" class="button button-secondary">
                 Cancelar
             </a>
 
-            <button
-              type="submit" class="button button-primary">
-    {{ "Salvar alterações" if registro else "Registrar vacinação" }}
-</button>
-            
+            <button type="submit" class="button button-primary">
+                {{ "Salvar alterações" if registro else "Registrar vacinação" }}
+            </button>
+
         </div>
 
     </form>

@@ -1,8 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
 
 
 #controledemanejo
-manejo = []
+manejos = []
 
 def criar_manejo(dados):
     dados["id"] = len(manejos) + 1
@@ -31,18 +33,9 @@ def manejo():
 # Atualize a rota de listagem existente para enviar também os manejos
 @app.route("/listagem")
 def listagem():
-    return render_template(
-        "listagem.html", 
-        vacinacoes=listar_vacinacoes(), 
-        manejos=listar_manejos()
-    )
+    return render_template("listagem.html", vacinacoes=listar_vacinacoes(),  manejos=listar_manejos())
     
 # feature controle de vacinação
-
-
-from flask import Flask, render_template, request, redirect, url_for
-
-app = Flask(__name__)
 
 vacinacoes = []
 
@@ -162,9 +155,9 @@ def atualizar_vacinacao_route(id):
     return render_template("vacinacao.html", registro=registro)
 # Listagem
 # Listagem
-@app.route("/listagem")
-def listagem():
-    return render_template("listagem.html", vacinacoes=listar_vacinacoes())
+@app.route("/listagemvacina")
+def listagemvacina():
+    return render_template("listagemvacina.html", vacinacoes=listar_vacinacoes())
 
 # Atualização
 @app.route("/atualizar")
