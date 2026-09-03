@@ -1,5 +1,42 @@
 from flask import Flask, render_template
 
+
+#controledemanejo
+manejo = []
+
+def criar_manejo(dados):
+    dados["id"] = len(manejos) + 1
+    manejos.append(dados)
+    return dados
+
+def listar_manejos():
+    return manejos
+
+# Rota de Registro de Manejo
+@app.route("/manejo", methods=["GET", "POST"])
+def manejo():
+    if request.method == "POST":
+        criar_manejo({
+            "animal": request.form.get("animal"),
+            "tipo_manejo": request.form.get("tipo_manejo"),
+            "data_manejo": request.form.get("data_manejo"),
+            "produto": request.form.get("produto"),
+            "dose": request.form.get("dose"),
+            "responsavel": request.form.get("responsavel"),
+            "observacoes": request.form.get("observacoes")
+        })
+        return redirect(url_for("listagem"))
+    return render_template("manejo.html")
+
+# Atualize a rota de listagem existente para enviar também os manejos
+@app.route("/listagem")
+def listagem():
+    return render_template(
+        "listagem.html", 
+        vacinacoes=listar_vacinacoes(), 
+        manejos=listar_manejos()
+    )
+    
 # feature controle de vacinação
 
 
