@@ -19,12 +19,23 @@
 
     <tbody>
 
-        <tr>
-            <td>Nenhum registro</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
+        {% if animais %}
+            {% for a in animais %}
+            <tr>
+                <td>{{ a.identificacao }}</td>
+                <td>{{ a.especie }}</td>
+                <td>{{ a.raca }}</td>
+                <td>{{ a.data_nascimento }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td>Nenhum registro</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        {% endif %}
 
     </tbody>
 
