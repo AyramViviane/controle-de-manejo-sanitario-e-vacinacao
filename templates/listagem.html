@@ -1,207 +1,140 @@
-from flask import Flask, render_template, request, redirect, url_for
-from datetime import date
+{% extends "base.html" %}
 
-app = Flask(__name__)
+{% block title %}Listagem{% endblock %}
 
+{% block content %}
 
-#controle de animais
-animais = []
+<h2>Animais cadastrados</h2>
 
-def criar_animal(dados):
-    dados["id"] = len(animais) + 1
-    animais.append(dados)
-    return dados
+<table>
 
-def listar_animais():
-    return animais
+    <thead>
+        <tr>
+            <th>Identificação</th>
+            <th>Espécie</th>
+            <th>Raça</th>
+            <th>Data de nascimento</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
 
-def remover_animal(id):
-    global animais
-    animais[:] = [a for a in animais if a.get("id") != id]
+    <tbody>
 
-#controledemanejo
-manejos = []
+        {% if animais %}
+            {% for a in animais %}
+            <tr>
+                <td>{{ a.identificacao }}</td>
+                <td>{{ a.especie }}</td>
+                <td>{{ a.raca }}</td>
+                <td>{{ a.data_nascimento }}</td>
+                <td>
+                    <form action="{{ url_for('remover_animal_route', id=a.id) }}" method="POST" onsubmit="return confirm('Remover este animal?');" class="inline-form">
+                        <button type="submit" class="link-danger">Remover</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td>Nenhum registro</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        {% endif %}
 
-def criar_manejo(dados):
-    dados["id"] = len(manejos) + 1
-    manejos.append(dados)
-    return dados
+    </tbody>
 
-def listar_manejos():
-    return manejos
+</table>
 
-# Rota de Registro de Manejo
-@app.route("/manejo", methods=["GET", "POST"])
-def manejo():
-    if request.method == "POST":
-        criar_manejo({
-            "animal": request.form.get("animal"),
-            "tipo_manejo": request.form.get("tipo_manejo"),
-            "data_manejo": request.form.get("data_manejo"),
-            "produto": request.form.get("produto"),
-            "dose": request.form.get("dose"),
-            "responsavel": request.form.get("responsavel"),
-            "observacoes": request.form.get("observacoes")
-        })
-        return redirect(url_for("listagem"))
-    return render_template("manejo.html")
+<!-- ===================== INÍCIO: CONTROLE DE VACINAÇÃO (Guilherme) ===================== -->
 
-# Atualize a rota de listagem existente para enviar também os manejos
-@app.route("/listagem")
-def listagem():
-    for v in vacinacoes:
-        v["status"] = status_vacina(v.get("proxima_dose"))
-    return render_template("listagem.html", animais=listar_animais(), vacinacoes=listar_vacinacoes(),  manejos=listar_manejos())
-    
-# feature controle de vacinação
+<h2>Vacinações registradas</h2>
 
-vacinacoes = []
+<table>
+    <thead>
+        <tr>
+            <th>Animal</th>
+            <th>Vacina</th>
+            <th>Data da aplicação</th>
+            <th>Próxima dose</th>
+            <th>Status</th>
+            <th>Responsável</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if vacinacoes %}
+            {% for v in vacinacoes %}
+            <tr>
+                <td>{{ v.animal }}</td>
+                <td>{{ v.vacina }}</td>
+                <td>{{ v.data_aplicacao }}</td>
+                <td>{{ v.proxima_dose }}</td>
+                <td>
+                    {% if v.status == "atrasada" %}
+                        <span class="badge badge-danger">Atrasada</span>
+                    {% elif v.status == "hoje" %}
+                        <span class="badge badge-warning">Vence hoje</span>
+                    {% elif v.status == "em_dia" %}
+                        <span class="badge badge-success">Em dia</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ v.responsavel }}</td>
+                <td><a href="{{ url_for('atualizar_vacinacao_route', id=v.id) }}">Editar</a></td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">Nenhuma vacinação registrada</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
 
-def criar_vacinacao(dados):
-    dados["id"] = len(vacinacoes) + 1
-    vacinacoes.append(dados)
-    return dados
-
-def listar_vacinacoes():
-    return vacinacoes
-
-def buscar_vacinacao(id):
-    return next((v for v in vacinacoes if v["id"] == id), None)
-
-def atualizar_vacinacao(id, dados):
-    registro = buscar_vacinacao(id)
-    if registro:
-        registro.update(dados)
-    return registro
-
-def status_vacina(proxima_dose):
-    if not proxima_dose:
-        return None
-    try:
-        prox = date.fromisoformat(proxima_dose)
-    except ValueError:
-        return None
-
-    hoje = date.today()
-
-    if prox < hoje:
-        return "atrasada"
-    elif prox == hoje:
-        return "hoje"
-    else:
-        return "em_dia"
-
-
-# Página inicial
-@app.route("/")
-def inicio():
-    return render_template("index.html")
-
-#Cadastro de Lotes
-
-@app.route('/lotes', methods=['GET', 'POST'])
-def lotes():
-    if request.method == "POST":
-        codigo = request.form.get("codigo")
-        quantidade = request.form.get("quantidade")
-        especie = request.form.get("especie")
-        data_formacao = request.form.get("data_formacao")
-
-        print("Novo lote cadastrado:")
-        print(f"Código: {codigo}")
-        print(f"Quantidade de animais: {quantidade}")
-        print(f"Espécie: {especie}")
-        print(f"Data de formação: {data_formacao}")
-
-        return redirect(url_for("listagem"))
-
-    return render_template("lotes.html")
+<!-- ===================== FIM: CONTROLE DE VACINAÇÃO ===================== -->
 
 
-# Cadastro de animal
-@app.route("/cadastro", methods=["GET", "POST"])
-def cadastro():
-
-    if request.method == "POST":
-
-        criar_animal({
-            "identificacao": request.form.get("identificacao"),
-            "especie": request.form.get("especie"),
-            "raca": request.form.get("raca"),
-            "sexo": request.form.get("sexo"),
-            "data_nascimento": request.form.get("data_nascimento"),
-        })
-
-        return redirect(url_for("listagem"))
-
-    return render_template("cadastro.html")
 
 
-# Remoção de um animal
-@app.route("/animais/remover/<int:id>", methods=["POST"])
-def remover_animal_route(id):
-    remover_animal(id)
-    return redirect(url_for("listagem"))
 
 
-# Registro de vacinação
-@app.route("/vacinacao", methods=["GET", "POST"])
-def vacinacao():
+<h2>Manejos Sanitários Registrados</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Animal</th>
+            <th>Tipo de Manejo</th>
+            <th>Data</th>
+            <th>Produto</th>
+            <th>Dose</th>
+            <th>Responsável</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if manejos %}
+            {% for m in manejos %}
+            <tr>
+                <td>{{ m.animal }}</td>
+                <td>{{ m.tipo_manejo }}</td>
+                <td>{{ m.data_manejo }}</td>
+                <td>{{ m.produto }}</td>
+                <td>{{ m.dose }}</td>
+                <td>{{ m.responsavel }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6">Nenhum manejo registrado</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
 
-    if request.method == "POST":
-        criar_vacinacao({
-            "animal": request.form.get("animal"),
-            "vacina": request.form.get("vacina"),
-            "lote": request.form.get("lote"),
-            "fabricante": request.form.get("fabricante"),
-            "data_aplicacao": request.form.get("data_aplicacao"),
-            "proxima_dose": request.form.get("proxima_dose"),
-            "dose": request.form.get("dose"),
-            "responsavel": request.form.get("responsavel"),
-            "observacoes": request.form.get("observacoes"),
-        })
-
-        return redirect(url_for("listagem"))
-
-    return render_template("vacinacao.html")
-
-
-# Edição de um registro de vacinação
-@app.route("/vacinacao/atualizar/<int:id>", methods=["GET", "POST"])
-def atualizar_vacinacao_route(id):
-
-    registro = buscar_vacinacao(id)
-
-    if registro is None:
-        return redirect(url_for("listagem"))
-
-    if request.method == "POST":
-        atualizar_vacinacao(id, {
-            "animal": request.form.get("animal"),
-            "vacina": request.form.get("vacina"),
-            "lote": request.form.get("lote"),
-            "fabricante": request.form.get("fabricante"),
-            "data_aplicacao": request.form.get("data_aplicacao"),
-            "proxima_dose": request.form.get("proxima_dose"),
-            "dose": request.form.get("dose"),
-            "responsavel": request.form.get("responsavel"),
-            "observacoes": request.form.get("observacoes"),
-        })
-
-        return redirect(url_for("listagem"))
-
-    return render_template("vacinacao.html", registro=registro)
-# Listagem
-# Listagem
-@app.route("/listagemvacina")
-def listagemvacina():
-    return render_template("listagemvacina.html", vacinacoes=listar_vacinacoes())
-
-# Atualização
-@app.route("/atualizar")
-def atualizar():
-    return render_template("atualizar.html")
+<!-- ===================== FIM: CONTROLE DE REGISTROS ===================== -->
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+{% endblock %}
