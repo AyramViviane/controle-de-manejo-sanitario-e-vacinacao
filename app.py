@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from datetime import date
 
 app = Flask(__name__)
 
@@ -13,6 +14,10 @@ def criar_animal(dados):
 
 def listar_animais():
     return animais
+
+def remover_animal(id):
+    global animais
+    animais[:] = [a for a in animais if a.get("id") != id]
 
 #controledemanejo
 manejos = []
@@ -44,6 +49,8 @@ def manejo():
 # Atualize a rota de listagem existente para enviar também os manejos
 @app.route("/listagem")
 def listagem():
+    for v in vacinacoes:
+        v["status"] = status_vacina(v.get("proxima_dose"))
     return render_template("listagem.html", animais=listar_animais(), vacinacoes=listar_vacinacoes(),  manejos=listar_manejos())
     
 # feature controle de vacinação
@@ -66,6 +73,24 @@ def atualizar_vacinacao(id, dados):
     if registro:
         registro.update(dados)
     return registro
+
+def status_vacina(proxima_dose):
+    if not proxima_dose:
+        return None
+    try:
+        prox = date.fromisoformat(proxima_dose)
+    except ValueError:
+        return None
+
+    hoje = date.today()
+
+    if prox < hoje:
+        return "atrasada"
+    elif prox == hoje:
+        return "hoje"
+    else:
+        return "em_dia"
+
 
 # Página inicial
 @app.route("/")
@@ -110,6 +135,13 @@ def cadastro():
         return redirect(url_for("listagem"))
 
     return render_template("cadastro.html")
+
+
+# Remoção de um animal
+@app.route("/animais/remover/<int:id>", methods=["POST"])
+def remover_animal_route(id):
+    remover_animal(id)
+    return redirect(url_for("listagem"))
 
 
 # Registro de vacinação

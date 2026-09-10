@@ -386,3 +386,49 @@ tr:hover {
     background-color: #e8f5e9;
     color: #2e7d32;
 }
+
+/* ===== Selos de status (vacinação) ===== */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.badge-danger {
+    background-color: #fdecea;
+    color: #c62828;
+}
+
+.badge-warning {
+    background-color: #fff8e1;
+    color: #f9a825;
+}
+
+.badge-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* ===== Ações em tabela (ex: remover) ===== */
+.inline-form {
+    display: inline;
+}
+
+.link-danger {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #c62828;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: inherit;
+}
+
+.link-danger:hover {
+    color: #8e0000;
+}
