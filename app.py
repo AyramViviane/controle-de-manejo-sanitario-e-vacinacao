@@ -213,6 +213,16 @@ def dashboard():
     total_vacinacoes = len(vacinacoes)
     total_manejos = len(manejos)
 
+    vacinacoes_em_dia = sum(
+        1 for vacinacao in vacinacoes
+        if vacinacao.get("status") == "em_dia"
+    )
+
+    vacinacoes_hoje = sum(
+        1 for vacinacao in vacinacoes
+        if vacinacao.get("status") == "hoje"
+    )
+
     vacinacoes_atrasadas = sum(
         1 for vacinacao in vacinacoes
         if vacinacao.get("status") == "atrasada"
@@ -234,7 +244,9 @@ def dashboard():
         total_manejos=total_manejos,
         vacinacoes_atrasadas=vacinacoes_atrasadas,
         vacinacoes_atencao=vacinacoes_atencao,
-        manejos_recentes=manejos_recentes
+        manejos_recentes=manejos_recentes,
+        vacinacoes_em_dia=vacinacoes_em_dia,
+        vacinacoes_hoje=vacinacoes_hoje,
     )
 
 if __name__ == "__main__":

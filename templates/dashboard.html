@@ -93,4 +93,44 @@
     {% endif %}
 </section>
 
+<section>
+    <h2>Situação das vacinações</h2>
+
+    <div style="max-width: 500px;">
+        <canvas id="graficoVacinacoes"></canvas>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const grafico = document.getElementById('graficoVacinacoes');
+
+    new Chart(grafico, {
+        type: 'bar',
+        data: {
+            labels: ['Em dia', 'Vencem hoje', 'Atrasadas'],
+            datasets: [{
+                label: 'Quantidade de vacinações',
+                data: [
+                        Number("{{ vacinacoes_em_dia }}"),
+                        Number("{{ vacinacoes_hoje }}"),
+                        Number("{{ vacinacoes_atrasadas }}")
+]
+                        }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+</script>
+
 {% endblock %}p Wheel's on the business
