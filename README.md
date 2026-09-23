@@ -13,7 +13,4 @@ https://github.com/AyramViviane/controle-de-manejo-sanitario-e-vacinacao/issues
 
 | Integrante | Responsabilidade |
 |------------|------------------|
-| Kezia Laís | Cadastro de Lotes |
-| Ayram Viviane | Alerta de vacinas e período de carência |
-| Guilherme da Silva | Controle de Vacinação |
-| Sthefany Campos | Consulta do Histórico Sanitário dos Lotes |
+| Kezia Laís |         Tudo     |
