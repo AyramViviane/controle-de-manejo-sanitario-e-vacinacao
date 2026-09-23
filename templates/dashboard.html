@@ -7,6 +7,29 @@
 <section>
     <h2>Dashboard</h2>
     <p>Visão geral do manejo sanitário e da vacinação dos animais.</p>
+    <div class="dashboard-metricas">
+
+    <div class="card-metrica">
+        <h3>Animais cadastrados</h3>
+        <p>{{ total_animais }}</p>
+    </div>
+
+    <div class="card-metrica">
+        <h3>Vacinações registradas</h3>
+        <p>{{ total_vacinacoes }}</p>
+    </div>
+
+    <div class="card-metrica">
+        <h3>Manejos registrados</h3>
+        <p>{{ total_manejos }}</p>
+    </div>
+
+    <div class="card-metrica">
+        <h3>Vacinações atrasadas</h3>
+        <p>{{ vacinacoes_atrasadas }}</p>
+    </div>
+
+</div>
 </section>
 
-{% endblock %}
+{% endblock %}p Wheel's on the business
