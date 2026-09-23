@@ -15,20 +15,6 @@ def criar_animal(dados):
 def listar_animais():
     return animais
 
-def buscar_animal(id):
-    return next(
-        (animal for animal in animais if animal["id"] == id),
-        None
-    )
-
-def atualizar_animal(id, dados):
-    animal = buscar_animal(id)
-
-    if animal:
-        animal.update(dados)
-
-    return animal
-
 def remover_animal(id):
     global animais
     animais[:] = [a for a in animais if a.get("id") != id]
@@ -88,13 +74,6 @@ def atualizar_vacinacao(id, dados):
         registro.update(dados)
     return registro
 
-def remover_vacinacao(id):
-    global vacinacoes
-    vacinacoes[:] = [
-        v for v in vacinacoes
-        if v.get("id") != id
-    ]
-
 def status_vacina(proxima_dose):
     if not proxima_dose:
         return None
@@ -149,6 +128,7 @@ def cadastro():
             "identificacao": request.form.get("identificacao"),
             "especie": request.form.get("especie"),
             "raca": request.form.get("raca"),
+            "sexo": request.form.get("sexo"),
             "data_nascimento": request.form.get("data_nascimento"),
         })
 
@@ -156,25 +136,6 @@ def cadastro():
 
     return render_template("cadastro.html")
 
-# Edição de animal
-@app.route("/animais/atualizar/<int:id>", methods=["GET", "POST"])
-def atualizar_animal_route(id):
-    animal = buscar_animal(id)
-
-    if animal is None:
-        return redirect(url_for("listagem"))
-
-    if request.method == "POST":
-        atualizar_animal(id, {
-            "identificacao": request.form.get("identificacao"),
-            "especie": request.form.get("especie"),
-            "raca": request.form.get("raca"),
-            "data_nascimento": request.form.get("data_nascimento"),
-        })
-
-        return redirect(url_for("listagem"))
-
-    return render_template("cadastro.html", animal=animal)
 
 # Remoção de um animal
 @app.route("/animais/remover/<int:id>", methods=["POST"])
@@ -230,13 +191,7 @@ def atualizar_vacinacao_route(id):
         return redirect(url_for("listagem"))
 
     return render_template("vacinacao.html", registro=registro)
-
-@app.route("/vacinacao/remover/<int:id>", methods=["POST"])
-def remover_vacinacao_route(id):
-    remover_vacinacao(id)
-    return redirect(url_for("listagem"))
-
-
+# Listagem
 # Listagem
 @app.route("/listagemvacina")
 def listagemvacina():
@@ -247,52 +202,6 @@ def listagemvacina():
 def atualizar():
     return render_template("atualizar.html")
 
-@app.route("/dashboard")
-def dashboard():
-    # Atualiza o status das vacinações
-    for vacinacao in vacinacoes:
-        vacinacao["status"] = status_vacina(vacinacao.get("proxima_dose"))
-
-    # Métricas gerais
-    total_animais = len(animais)
-    total_vacinacoes = len(vacinacoes)
-    total_manejos = len(manejos)
-
-    vacinacoes_em_dia = sum(
-        1 for vacinacao in vacinacoes
-        if vacinacao.get("status") == "em_dia"
-    )
-
-    vacinacoes_hoje = sum(
-        1 for vacinacao in vacinacoes
-        if vacinacao.get("status") == "hoje"
-    )
-
-    vacinacoes_atrasadas = sum(
-        1 for vacinacao in vacinacoes
-        if vacinacao.get("status") == "atrasada"
-    )
-
-    # Registros que precisam de atenção
-    vacinacoes_atencao = [
-        vacinacao for vacinacao in vacinacoes
-        if vacinacao.get("status") == "atrasada"
-    ]
-
-    # Últimos 5 manejos cadastrados
-    manejos_recentes = manejos[-5:][::-1]
-
-    return render_template(
-        "dashboard.html",
-        total_animais=total_animais,
-        total_vacinacoes=total_vacinacoes,
-        total_manejos=total_manejos,
-        vacinacoes_atrasadas=vacinacoes_atrasadas,
-        vacinacoes_atencao=vacinacoes_atencao,
-        manejos_recentes=manejos_recentes,
-        vacinacoes_em_dia=vacinacoes_em_dia,
-        vacinacoes_hoje=vacinacoes_hoje,
-    )
 
 if __name__ == "__main__":
     app.run(debug=True)
