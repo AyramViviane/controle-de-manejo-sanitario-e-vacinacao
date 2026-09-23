@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Cabeçalho do Dashboard -->
+<section class="page-header">
+    <span class="page-tag">PAINEL DE CONTROLE</span>
+    <h2>Dashboard</h2>
+    <p>Visão geral do manejo sanitário e da vacinação dos animais.</p>
+</section>
+
+<!-- Métricas -->
+<div class="dashboard-metricas">
+
+    <div class="card-metrica">
+        <h3>Animais cadastrados</h3>
+        <p>{{ total_animais }}</p>
+    </div>
+
+    <div class="card-metrica">
+        <h3>Vacinações registradas</h3>
+        <p>{{ total_vacinacoes }}</p>
+    </div>
+
+    <div class="card-metrica">
+        <h3>Manejos registrados</h3>
+        <p>{{ total_manejos }}</p>
+    </div>
+
+    <div class="card-metrica">
+        <h3>Vacinações atrasadas</h3>
+        <p>{{ vacinacoes_atrasadas }}</p>
+    </div>
+
+</div>
+
+<!-- Vacinações que precisam de atenção -->
+<section class="dashboard-section">
+    <h2>Vacinações que precisam de atenção</h2>
+
+    {% if vacinacoes_atencao %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Animal</th>
+                    <th>Vacina</th>
+                    <th>Próxima dose</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for vacinacao in vacinacoes_atencao %}
+                <tr>
+                    <td>{{ vacinacao.animal }}</td>
+                    <td>{{ vacinacao.vacina }}</td>
+                    <td>{{ vacinacao.proxima_dose }}</td>
+                    <td>
+                        <span class="badge badge-danger">
+                            Atrasada
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhuma vacinação atrasada no momento.</p>
+    {% endif %}
+</section>
+
+<!-- Manejos recentes -->
+<section class="dashboard-section">
+    <h2>Manejos sanitários recentes</h2>
+
+    {% if manejos_recentes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Animal</th>
+                    <th>Tipo de manejo</th>
+                    <th>Data</th>
+                    <th>Produto</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for manejo in manejos_recentes %}
+                <tr>
+                    <td>{{ manejo.animal }}</td>
+                    <td>{{ manejo.tipo_manejo }}</td>
+                    <td>{{ manejo.data_manejo }}</td>
+                    <td>{{ manejo.produto }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhum manejo sanitário registrado.</p>
+    {% endif %}
+</section>
+
+<!-- Gráfico -->
+<section class="dashboard-section">
+    <h2>Situação das vacinações</h2>
+
+    <div class="dashboard-grafico">
+        <canvas id="graficoVacinacoes"></canvas>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const grafico = document.getElementById('graficoVacinacoes');
+
+    new Chart(grafico, {
+        type: 'bar',
+
+        data: {
+            labels: ['Em dia', 'Vencem hoje', 'Atrasadas'],
+
+            datasets: [{
+                label: 'Quantidade de vacinações',
+
+                data: [
+                    Number("{{ vacinacoes_em_dia }}"),
+                    Number("{{ vacinacoes_hoje }}"),
+                    Number("{{ vacinacoes_atrasadas }}")
+                ]
+            }]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            scales: {
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

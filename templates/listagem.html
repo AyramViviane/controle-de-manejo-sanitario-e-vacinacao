@@ -21,27 +21,34 @@
     <tbody>
 
         {% if animais %}
-            {% for a in animais %}
-            <tr>
-                <td>{{ a.identificacao }}</td>
-                <td>{{ a.especie }}</td>
-                <td>{{ a.raca }}</td>
-                <td>{{ a.data_nascimento }}</td>
-                <td>
-                    <form action="{{ url_for('remover_animal_route', id=a.id) }}" method="POST" onsubmit="return confirm('Remover este animal?');" class="inline-form">
-                        <button type="submit" class="link-danger">Remover</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
+        {% for a in animais %}
+        <tr>
+            <td>{{ a.identificacao }}</td>
+            <td>{{ a.especie }}</td>
+            <td>{{ a.raca }}</td>
+            <td>{{ a.data_nascimento }}</td>
+            <td>
+                <a href="{{ url_for('atualizar_animal_route', id=a.id) }}">
+                    Editar
+                </a>
+
+                <form action="{{ url_for('remover_animal_route', id=a.id) }}" method="POST"
+                    onsubmit="return confirm('Remover este animal?');" class="inline-form">
+                    <button type="submit" class="link-danger">
+                        Remover
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
         {% else %}
-            <tr>
-                <td>Nenhum registro</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
+        <tr>
+            <td>Nenhum registro</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
         {% endif %}
 
     </tbody>
@@ -66,31 +73,42 @@
     </thead>
     <tbody>
         {% if vacinacoes %}
-            {% for v in vacinacoes %}
-            <tr>
-                <td>{{ v.animal }}</td>
-                <td>{{ v.vacina }}</td>
-                <td>{{ v.data_aplicacao }}</td>
-                <td>{{ v.proxima_dose }}</td>
-                <td>
-                    {% if v.status == "atrasada" %}
-                        <span class="badge badge-danger">Atrasada</span>
-                    {% elif v.status == "hoje" %}
-                        <span class="badge badge-warning">Vence hoje</span>
-                    {% elif v.status == "em_dia" %}
-                        <span class="badge badge-success">Em dia</span>
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>{{ v.responsavel }}</td>
-                <td><a href="{{ url_for('atualizar_vacinacao_route', id=v.id) }}">Editar</a></td>
-            </tr>
-            {% endfor %}
+        {% for v in vacinacoes %}
+        <tr>
+            <td>{{ v.animal }}</td>
+            <td>{{ v.vacina }}</td>
+            <td>{{ v.data_aplicacao }}</td>
+            <td>{{ v.proxima_dose }}</td>
+            <td>
+                {% if v.status == "atrasada" %}
+                <span class="badge badge-danger">Atrasada</span>
+                {% elif v.status == "hoje" %}
+                <span class="badge badge-warning">Vence hoje</span>
+                {% elif v.status == "em_dia" %}
+                <span class="badge badge-success">Em dia</span>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            <td>{{ v.responsavel }}</td>
+            <td>
+                <a href="{{ url_for('atualizar_vacinacao_route', id=v.id) }}">
+                    Editar
+                </a>
+
+                <form action="{{ url_for('remover_vacinacao_route', id=v.id) }}" method="POST"
+                    onsubmit="return confirm('Remover esta vacinação?');" class="inline-form">
+                    <button type="submit" class="link-danger">
+                        Remover
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
         {% else %}
-            <tr>
-                <td colspan="7">Nenhuma vacinação registrada</td>
-            </tr>
+        <tr>
+            <td colspan="7">Nenhuma vacinação registrada</td>
+        </tr>
         {% endif %}
     </tbody>
 </table>
@@ -116,20 +134,20 @@
     </thead>
     <tbody>
         {% if manejos %}
-            {% for m in manejos %}
-            <tr>
-                <td>{{ m.animal }}</td>
-                <td>{{ m.tipo_manejo }}</td>
-                <td>{{ m.data_manejo }}</td>
-                <td>{{ m.produto }}</td>
-                <td>{{ m.dose }}</td>
-                <td>{{ m.responsavel }}</td>
-            </tr>
-            {% endfor %}
+        {% for m in manejos %}
+        <tr>
+            <td>{{ m.animal }}</td>
+            <td>{{ m.tipo_manejo }}</td>
+            <td>{{ m.data_manejo }}</td>
+            <td>{{ m.produto }}</td>
+            <td>{{ m.dose }}</td>
+            <td>{{ m.responsavel }}</td>
+        </tr>
+        {% endfor %}
         {% else %}
-            <tr>
-                <td colspan="6">Nenhum manejo registrado</td>
-            </tr>
+        <tr>
+            <td colspan="6">Nenhum manejo registrado</td>
+        </tr>
         {% endif %}
     </tbody>
 </table>
