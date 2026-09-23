@@ -1,36 +1,62 @@
 {% extends "base.html" %}
 
-{% block title %}Cadastro{% endblock %}
+{% block title %}
+    {% if animal %}Editar Animal{% else %}Cadastro{% endif %}
+{% endblock %}
 
 {% block content %}
 
-<h2>Cadastro de Animal</h2>
+<h2>
+    {% if animal %}
+        Editar Animal
+    {% else %}
+        Cadastro de Animal
+    {% endif %}
+</h2>
 
 <form method="POST">
 
     <label for="identificacao">Identificação do animal:</label>
-    <input type="text"
-           id="identificacao"
-           name="identificacao"
-           required>
+    <input
+        type="text"
+        id="identificacao"
+        name="identificacao"
+        value="{{ animal.identificacao if animal else '' }}"
+        required
+    >
 
     <label for="especie">Espécie:</label>
-    <input type="text"
-           id="especie"
-           name="especie"
-           required>
+    <input
+        type="text"
+        id="especie"
+        name="especie"
+        value="{{ animal.especie if animal else '' }}"
+        required
+    >
 
     <label for="raca">Raça:</label>
-    <input type="text"
-           id="raca"
-           name="raca">
+    <input
+        type="text"
+        id="raca"
+        name="raca"
+        value="{{ animal.raca if animal else '' }}"
+    >
 
     <label for="data_nascimento">Data de nascimento:</label>
-    <input type="date"
-           id="data_nascimento"
-           name="data_nascimento">
+    <input
+        type="date"
+        id="data_nascimento"
+        name="data_nascimento"
+        value="{{ animal.data_nascimento if animal else '' }}"
+    >
 
-    <button type="submit">Cadastrar</button>
+    <button type="submit">
+        {% if animal %}
+            Salvar alterações
+        {% else %}
+            Cadastrar
+        {% endif %}
+    </button>
 
 </form>
 
