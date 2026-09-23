@@ -204,21 +204,37 @@ def atualizar():
 
 @app.route("/dashboard")
 def dashboard():
+    # Atualiza o status das vacinações
+    for vacinacao in vacinacoes:
+        vacinacao["status"] = status_vacina(vacinacao.get("proxima_dose"))
+
+    # Métricas gerais
     total_animais = len(animais)
     total_vacinacoes = len(vacinacoes)
     total_manejos = len(manejos)
 
     vacinacoes_atrasadas = sum(
         1 for vacinacao in vacinacoes
-        if vacinacao.get("status") == "Atrasada"
+        if vacinacao.get("status") == "atrasada"
     )
+
+    # Registros que precisam de atenção
+    vacinacoes_atencao = [
+        vacinacao for vacinacao in vacinacoes
+        if vacinacao.get("status") == "atrasada"
+    ]
+
+    # Últimos 5 manejos cadastrados
+    manejos_recentes = manejos[-5:][::-1]
 
     return render_template(
         "dashboard.html",
         total_animais=total_animais,
         total_vacinacoes=total_vacinacoes,
         total_manejos=total_manejos,
-        vacinacoes_atrasadas=vacinacoes_atrasadas
+        vacinacoes_atrasadas=vacinacoes_atrasadas,
+        vacinacoes_atencao=vacinacoes_atencao,
+        manejos_recentes=manejos_recentes
     )
 
 if __name__ == "__main__":

@@ -32,4 +32,65 @@
 </div>
 </section>
 
+<section>
+    <h2>Vacinações que precisam de atenção</h2>
+
+    {% if vacinacoes_atencao %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Animal</th>
+                    <th>Vacina</th>
+                    <th>Próxima dose</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for vacinacao in vacinacoes_atencao %}
+                <tr>
+                    <td>{{ vacinacao.animal }}</td>
+                    <td>{{ vacinacao.vacina }}</td>
+                    <td>{{ vacinacao.proxima_dose }}</td>
+                    <td>Atrasada</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhuma vacinação atrasada no momento.</p>
+    {% endif %}
+</section>
+
+
+<section>
+    <h2>Manejos sanitários recentes</h2>
+
+    {% if manejos_recentes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Animal</th>
+                    <th>Tipo de manejo</th>
+                    <th>Data</th>
+                    <th>Produto</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for manejo in manejos_recentes %}
+                <tr>
+                    <td>{{ manejo.animal }}</td>
+                    <td>{{ manejo.tipo_manejo }}</td>
+                    <td>{{ manejo.data_manejo }}</td>
+                    <td>{{ manejo.produto }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhum manejo sanitário registrado.</p>
+    {% endif %}
+</section>
+
 {% endblock %}p Wheel's on the business
