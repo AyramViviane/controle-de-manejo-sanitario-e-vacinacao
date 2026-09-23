@@ -7,7 +7,7 @@ Controle de Manejo Sanitário e Vacinação
 https://github.com/AyramViviane/controle-de-manejo-sanitario-e-vacinacao/edit/main/README.md
 
 ## Quadro Kanban (GitHub Projects)
-https://github.com/AyramViviane/controle-de-manejo-sanitario-e-vacinacao/issues
+[https://github.com/AyramViviane/controle-de-manejo-sanitario-e-vacinacao/issues](https://github.com/laisy2k/controle-de-manejo-sanitario-e-vacinacao/projects)
 
 ## Integrantes do Grupo
 
