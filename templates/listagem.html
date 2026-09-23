@@ -91,7 +91,18 @@
                 {% endif %}
             </td>
             <td>{{ v.responsavel }}</td>
-            <td><a href="{{ url_for('atualizar_vacinacao_route', id=v.id) }}">Editar</a></td>
+            <td>
+                <a href="{{ url_for('atualizar_vacinacao_route', id=v.id) }}">
+                    Editar
+                </a>
+
+                <form action="{{ url_for('remover_vacinacao_route', id=v.id) }}" method="POST"
+                    onsubmit="return confirm('Remover esta vacinação?');" class="inline-form">
+                    <button type="submit" class="link-danger">
+                        Remover
+                    </button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
         {% else %}

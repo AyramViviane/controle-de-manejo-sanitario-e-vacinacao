@@ -88,6 +88,13 @@ def atualizar_vacinacao(id, dados):
         registro.update(dados)
     return registro
 
+def remover_vacinacao(id):
+    global vacinacoes
+    vacinacoes[:] = [
+        v for v in vacinacoes
+        if v.get("id") != id
+    ]
+
 def status_vacina(proxima_dose):
     if not proxima_dose:
         return None
@@ -223,7 +230,13 @@ def atualizar_vacinacao_route(id):
         return redirect(url_for("listagem"))
 
     return render_template("vacinacao.html", registro=registro)
-# Listagem
+
+@app.route("/vacinacao/remover/<int:id>", methods=["POST"])
+def remover_vacinacao_route(id):
+    remover_vacinacao(id)
+    return redirect(url_for("listagem"))
+
+
 # Listagem
 @app.route("/listagemvacina")
 def listagemvacina():
