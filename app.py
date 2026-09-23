@@ -15,6 +15,20 @@ def criar_animal(dados):
 def listar_animais():
     return animais
 
+def buscar_animal(id):
+    return next(
+        (animal for animal in animais if animal["id"] == id),
+        None
+    )
+
+def atualizar_animal(id, dados):
+    animal = buscar_animal(id)
+
+    if animal:
+        animal.update(dados)
+
+    return animal
+
 def remover_animal(id):
     global animais
     animais[:] = [a for a in animais if a.get("id") != id]
@@ -128,7 +142,6 @@ def cadastro():
             "identificacao": request.form.get("identificacao"),
             "especie": request.form.get("especie"),
             "raca": request.form.get("raca"),
-            "sexo": request.form.get("sexo"),
             "data_nascimento": request.form.get("data_nascimento"),
         })
 
@@ -136,6 +149,25 @@ def cadastro():
 
     return render_template("cadastro.html")
 
+# Edição de animal
+@app.route("/animais/atualizar/<int:id>", methods=["GET", "POST"])
+def atualizar_animal_route(id):
+    animal = buscar_animal(id)
+
+    if animal is None:
+        return redirect(url_for("listagem"))
+
+    if request.method == "POST":
+        atualizar_animal(id, {
+            "identificacao": request.form.get("identificacao"),
+            "especie": request.form.get("especie"),
+            "raca": request.form.get("raca"),
+            "data_nascimento": request.form.get("data_nascimento"),
+        })
+
+        return redirect(url_for("listagem"))
+
+    return render_template("cadastro.html", animal=animal)
 
 # Remoção de um animal
 @app.route("/animais/remover/<int:id>", methods=["POST"])
