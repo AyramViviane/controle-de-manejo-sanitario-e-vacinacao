@@ -4,10 +4,15 @@
 
 {% block content %}
 
-<section>
+<!-- Cabeçalho do Dashboard -->
+<section class="page-header">
+    <span class="page-tag">PAINEL DE CONTROLE</span>
     <h2>Dashboard</h2>
     <p>Visão geral do manejo sanitário e da vacinação dos animais.</p>
-    <div class="dashboard-metricas">
+</section>
+
+<!-- Métricas -->
+<div class="dashboard-metricas">
 
     <div class="card-metrica">
         <h3>Animais cadastrados</h3>
@@ -30,9 +35,9 @@
     </div>
 
 </div>
-</section>
 
-<section>
+<!-- Vacinações que precisam de atenção -->
+<section class="dashboard-section">
     <h2>Vacinações que precisam de atenção</h2>
 
     {% if vacinacoes_atencao %}
@@ -52,7 +57,11 @@
                     <td>{{ vacinacao.animal }}</td>
                     <td>{{ vacinacao.vacina }}</td>
                     <td>{{ vacinacao.proxima_dose }}</td>
-                    <td>Atrasada</td>
+                    <td>
+                        <span class="badge badge-danger">
+                            Atrasada
+                        </span>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -62,8 +71,8 @@
     {% endif %}
 </section>
 
-
-<section>
+<!-- Manejos recentes -->
+<section class="dashboard-section">
     <h2>Manejos sanitários recentes</h2>
 
     {% if manejos_recentes %}
@@ -93,10 +102,11 @@
     {% endif %}
 </section>
 
-<section>
+<!-- Gráfico -->
+<section class="dashboard-section">
     <h2>Situação das vacinações</h2>
 
-    <div style="max-width: 500px;">
+    <div class="dashboard-grafico">
         <canvas id="graficoVacinacoes"></canvas>
     </div>
 </section>
@@ -108,22 +118,29 @@
 
     new Chart(grafico, {
         type: 'bar',
+
         data: {
             labels: ['Em dia', 'Vencem hoje', 'Atrasadas'],
+
             datasets: [{
                 label: 'Quantidade de vacinações',
+
                 data: [
-                        Number("{{ vacinacoes_em_dia }}"),
-                        Number("{{ vacinacoes_hoje }}"),
-                        Number("{{ vacinacoes_atrasadas }}")
-]
-                        }]
+                    Number("{{ vacinacoes_em_dia }}"),
+                    Number("{{ vacinacoes_hoje }}"),
+                    Number("{{ vacinacoes_atrasadas }}")
+                ]
+            }]
         },
+
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+
             scales: {
                 y: {
                     beginAtZero: true,
+
                     ticks: {
                         precision: 0
                     }
@@ -133,4 +150,4 @@
     });
 </script>
 
-{% endblock %}p Wheel's on the business
+{% endblock %}
