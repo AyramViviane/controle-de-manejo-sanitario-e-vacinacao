@@ -2,92 +2,67 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
         {% block title %}Sistema Agro{% endblock %}
     </title>
 
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 
 <body>
 
 <header class="header">
-
     <div class="container header-content">
-
         <div class="logo">
-
             <span class="logo-icon">🌱</span>
-
             <div>
                 <h1>AgroSan</h1>
                 <span>Controle Sanitário</span>
             </div>
-
         </div>
 
-
         <nav class="nav">
-
-            <a href="{{ url_for('inicio') }}">
-                Início
-            </a>
-
-            <a href="{{ url_for('cadastro') }}">
-                Animais
-            </a>
-
-            <a href="{{ url_for('vacinacao') }}">
-                Vacinação
-            </a>
-
-            <a href="{{ url_for('listagem') }}">
-                Registros
-            </a>
-
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('inicio') }}">Início</a>
+                <a href="{{ url_for('cadastro') }}">Animais</a>
+                <a href="{{ url_for('lotes') }}">Lotes</a>
+                <a href="{{ url_for('vacinacao') }}">Vacinação</a>
+                <a href="{{ url_for('listagem') }}">Registros</a>
+                <a href="{{ url_for('logout') }}" style="color: #e74c3c;">Sair ({{ current_user.username }})</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Entrar</a>
+                <a href="{{ url_for('register') }}">Cadastrar</a>
+            {% endif %}
         </nav>
-
     </div>
-
 </header>
 
-
 <main class="container main-content">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages" style="margin-bottom: 20px;">
+          {% for message in messages %}
+            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 5px;">
+                {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
     {% block content %}
     {% endblock %}
-
 </main>
 
-
 <footer class="footer">
-
     <div class="container">
-
-        <p>
-            AgroSan — Sistema de Controle e Manejo Sanitário
-        </p>
-
-        <span>
-            Projeto acadêmico
-        </span>
-
+        <p>AgroSan — Sistema de Controle e Manejo Sanitário</p>
+        <span>Projeto acadêmico</span>
     </div>
-
 </footer>
 
 </body>
-
 </html>
