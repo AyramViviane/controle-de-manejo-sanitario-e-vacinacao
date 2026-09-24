@@ -294,12 +294,7 @@ def atualizar_vacinacao_route(id):
 def listagem():
     return render_template("listagem.html", vacinacoes=listar_vacinacoes())
 =======
-# Listagem
-# Listagem
-@app.route("/listagemvacina")
-def listagemvacina():
-    return render_template("listagemvacina.html", vacinacoes=listar_vacinacoes())
->>>>>>> d985ef316c84fd5080142a17f914133123df0735
+
 
 @app.route("/atualizar")
 @login_required

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dashboard - Controle de Manejo Sanitário</h2>
+        <div>
+            <span class="badge bg-secondary p-2">Usuário: {{ session.get('usuario', 'Convidado') }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm ms-2">Sair</a>
+        </div>
+    </div>
+    <hr>
+    
+    <!-- Cards de Métricas Principais -->
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white p-3 shadow-sm">
+                <h5>Total de Lotes</h5>
+                <h3 class="display-6 font-weight-bold">{{ lotes }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white p-3 shadow-sm">
+                <h5>Total de Animais</h5>
+                <h3 class="display-6 font-weight-bold">{{ animais }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark p-3 shadow-sm">
+                <h5>Vacinações Registradas</h5>
+                <h3 class="display-6 font-weight-bold">{{ vacinacoes }}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white p-3 shadow-sm">
+                <h5>Manejos Realizados</h5>
+                <h3 class="display-6 font-weight-bold">{{ manejos }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção de Ações Rápidas e Visualização -->
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card p-4 shadow-sm h-100">
+                <h4>Visão Geral do Sistema</h4>
+                <p class="text-muted">Painel integrado ao banco de dados SQLite para monitoramento das operações sanitárias e rebanhos.</p>
+                <hr>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('lotes') }}" class="btn btn-outline-primary">Ver Lotes Cadastrados</a>
+                    <a href="{{ url_for('manejo') }}" class="btn btn-outline-success">Registrar Novo Manejo</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm h-100 bg-light">
+                <h5>Status da Conexão</h5>
+                <p class="mb-1 text-success"><strong>● Banco de Dados Ativo</strong></p>
+                <small class="text-muted">Utilizando arquivo SQLite local (`manejo_sanitario.db`) com suporte a gatilhos e auditoria.</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
