@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
 -- Inserindo usuários padrão (Admin e Aplicação)
 INSERT OR IGNORE INTO usuarios (username, senha, perfil) VALUES ('admin_db', 'AdminSecure2026*', 'admin');
 INSERT OR IGNORE INTO usuarios (username, senha, perfil) VALUES ('app_user', 'AppManejo2026!', 'app_user');
-
+ 
 -- 2. TRIGGER (Gatilho) NO SQLITE
 -- Registra um log de auditoria automaticamente após a inserção de um manejo
 CREATE TRIGGER IF NOT EXISTS trg_after_insert_manejo
