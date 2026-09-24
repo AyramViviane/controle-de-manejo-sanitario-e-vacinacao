@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Manejo Sanitário{% endblock %}
+
+{% block content %}
+<h2>Registro de Manejo Sanitário</h2>
+
+<form method="POST" action="{{ url_for('manejo') }}">
+    <label>Animal / Identificação:</label>
+    <input type="text" name="animal" required>
+
+    <label>Tipo de Manejo:</label>
+    <input type="text" name="tipo_manejo" placeholder="Ex: Vermifugação, Pesagem" required>
+
+    <label>Data do Manejo:</label>
+    <input type="date" name="data_manejo" required>
+
+    <label>Produto Aplicado:</label>
+    <input type="text" name="produto">
+
+    <label>Dose:</label>
+    <input type="text" name="dose">
+
+    <label>Responsável:</label>
+    <input type="text" name="responsavel" required>
+
+    <label>Observações:</label>
+    <textarea name="observacoes"></textarea>
+
+    <button type="submit">Salvar Manejo</button>
+</form>
+{% endblock %}
