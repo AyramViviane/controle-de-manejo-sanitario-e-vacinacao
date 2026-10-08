@@ -20,32 +20,79 @@ DATABASE = "database.db"
 
 
 def get_db():
-  """Obtém a conexão com a base de dados SQLite para o contexto atual."""
+  """Obtém a conexão com a base de dados SQLite."""
   db = getattr(g, "_database", None)
   if db is None:
     db = g._database = sqlite3.connect(DATABASE)
-    db.row_factory = sqlite3.Row  # Permite aceder aos campos por nome
+    db.row_factory = sqlite3.Row  # Permite aceder às colunas pelo nome
   return db
 
 
 @app.teardown_appcontext
 def close_connection(exception):
-  """Fecha a conexão com a base de dados no final de cada requisição."""
+  """Fecha a conexão com a base de dados ao terminar a requisição."""
   db = getattr(g, "_database", None)
   if db is not None:
     db.close()
 
 
 def init_db():
-  """Cria as tabelas com base no schema.sql e garante utilizador com senha em hash."""
+  """Cria todas as tabelas com a estrutura completa."""
   with app.app_context():
     db = get_db()
-    with open("schema.sql", mode="r", encoding="utf-8") as f:
-      db.cursor().executescript(f.read())
-    db.commit()
-
-    # Garantir que o admin padrão do schema tenha senha em hash seguro
     cursor = db.cursor()
+
+    # 1. Tabela de Utilizadores
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                senha TEXT NOT NULL,
+                perfil TEXT NOT NULL
+            )
+        """)
+
+    # 2. Tabela de Animais
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS animais (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                identificacao TEXT NOT NULL,
+                especie TEXT,
+                raca TEXT,
+                data_nascimento TEXT
+            )
+        """)
+
+    # 3. Tabela de Lotes
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS lotes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                codigo_lote TEXT,
+                nome TEXT,
+                descricao TEXT,
+                quantidade_animais INTEGER,
+                especie TEXT,
+                data_formacao TEXT
+            )
+        """)
+
+    # 4. Tabela de Vacinações
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS vacinacao (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                animal TEXT,
+                lote_id INTEGER,
+                vacina_id INTEGER,
+                vacina TEXT,
+                data_vacinacao TEXT,
+                data_aplicacao TEXT,
+                proxima_dose TEXT,
+                status TEXT,
+                responsavel TEXT
+            )
+        """)
+
+    # Admin padrão
     senha_admin_hash = generate_password_hash("AdminSecure2026*")
     cursor.execute(
         """
@@ -54,6 +101,7 @@ def init_db():
     """,
         (senha_admin_hash,),
     )
+
     db.commit()
 
 
@@ -61,9 +109,6 @@ def init_db():
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-login_manager.login_message = (
-    "Por favor, faça login para aceder a esta página."
-)
 
 
 class User(UserMixin):
@@ -91,7 +136,6 @@ def load_user(user_id):
   return None
 
 
-# --- FUNÇÃO AUXILIAR: ESTADO DA VACINA ---
 def status_vacina(proxima_dose):
   if not proxima_dose:
     return None
@@ -126,7 +170,6 @@ def login():
     cursor.execute("SELECT * FROM usuarios WHERE username = ?", (username,))
     user_data = cursor.fetchone()
 
-    # Validação segura utilizando estritamente check_password_hash
     if user_data and check_password_hash(user_data["senha"], password):
       user = User(
           user_data["id"],
@@ -150,7 +193,6 @@ def register():
   if request.method == "POST":
     username = request.form.get("username")
     password = request.form.get("password")
-    perfil = "app_user"
 
     db = get_db()
     cursor = db.cursor()
@@ -160,18 +202,17 @@ def register():
       flash("O nome de utilizador já existe.")
       return redirect(url_for("register"))
 
-    # Criando o hash seguro da senha fornecida pelo utilizador
     senha_hash = generate_password_hash(password)
     cursor.execute(
         "INSERT INTO usuarios (username, senha, perfil) VALUES (?, ?, ?)",
-        (username, senha_hash, perfil),
+        (username, senha_hash, "app_user"),
     )
     db.commit()
 
-    flash("Conta criada com sucesso! Faça login.")
+    flash("Conta criada com sucesso!")
     return redirect(url_for("login"))
 
-  return render_template("register.html")
+  return render_template("registrar.html")
 
 
 @app.route("/logout")
@@ -181,7 +222,7 @@ def logout():
   return redirect(url_for("login"))
 
 
-# --- ROTAS DA APLICAÇÃO (PROTEGIDAS) ---
+# --- ROTAS PRINCIPAIS ---
 
 
 @app.route("/")
@@ -197,14 +238,23 @@ def lotes():
   cursor = db.cursor()
 
   if request.method == "POST":
-    nome = request.form.get("codigo")
-    quantidade = request.form.get("quantidade")
-    descricao = request.form.get("especie")
+    codigo = (
+        request.form.get("codigo")
+        or request.form.get("codigo_lote")
+        or "LOTE-001"
+    )
+    quantidade = request.form.get("quantidade") or request.form.get(
+        "quantidade_animais"
+    )
+    especie = request.form.get("especie")
+    data_formacao = request.form.get("data_formacao") or str(date.today())
 
     cursor.execute(
-        "INSERT INTO lotes (nome, descricao, quantidade_animais) VALUES (?, ?,"
-        " ?)",
-        (nome, descricao, quantidade),
+        """
+            INSERT INTO lotes (codigo_lote, nome, quantidade_animais, especie, data_formacao) 
+            VALUES (?, ?, ?, ?, ?)
+        """,
+        (codigo, codigo, quantidade, especie, data_formacao),
     )
     db.commit()
     return redirect(url_for("listagem"))
@@ -215,34 +265,26 @@ def lotes():
 @app.route("/cadastro", methods=["GET", "POST"])
 @login_required
 def cadastro():
-  if request.method == "POST":
-    return redirect(url_for("listagem"))
-  return render_template("cadastro.html")
-
-
-@app.route("/manejo", methods=["GET", "POST"])
-@login_required
-def manejo():
   db = get_db()
   cursor = db.cursor()
 
   if request.method == "POST":
-    lote_id = request.form.get("animal")
-    tipo_manejo = request.form.get("tipo_manejo")
-    data_manejo = request.form.get("data_manejo")
-    observacoes = request.form.get("observacoes")
+    identificacao = request.form.get("identificacao")
+    especie = request.form.get("especie")
+    raca = request.form.get("raca")
+    data_nascimento = request.form.get("data_nascimento")
 
     cursor.execute(
-        "INSERT INTO manejo_sanitario (lote_id, tipo_manejo, data_manejo,"
-        " observacoes) VALUES (?, ?, ?, ?)",
-        (lote_id, tipo_manejo, data_manejo, observacoes),
+        """
+            INSERT INTO animais (identificacao, especie, raca, data_nascimento)
+            VALUES (?, ?, ?, ?)
+        """,
+        (identificacao, especie, raca, data_nascimento),
     )
     db.commit()
     return redirect(url_for("listagem"))
 
-  cursor.execute("SELECT * FROM lotes")
-  lotes_cadastrados = cursor.fetchall()
-  return render_template("manejo.html", lotes=lotes_cadastrados)
+  return render_template("cadastro.html")
 
 
 @app.route("/vacinacao", methods=["GET", "POST"])
@@ -252,22 +294,27 @@ def vacinacao():
   cursor = db.cursor()
 
   if request.method == "POST":
-    lote_id = request.form.get("animal")
+    animal = request.form.get("animal")
     nome_vacina = request.form.get("vacina")
-    fabricante = request.form.get("fabricante")
-    data_vacinacao = request.form.get("data_aplicacao")
-    proxima_dose = request.form.get("proxima_dose")
-
-    cursor.execute(
-        "INSERT INTO vacinas (nome_vacina, fabricante) VALUES (?, ?)",
-        (nome_vacina, fabricante),
+    data_vacinacao = request.form.get("data_aplicacao") or request.form.get(
+        "data_vacinacao"
     )
-    vacina_id = cursor.lastrowid
+    proxima_dose = request.form.get("proxima_dose")
+    responsavel = request.form.get("responsavel")
 
     cursor.execute(
-        "INSERT INTO vacinacao (lote_id, vacina_id, data_vacinacao,"
-        " proxima_dose) VALUES (?, ?, ?, ?)",
-        (lote_id, vacina_id, data_vacinacao, proxima_dose),
+        """
+            INSERT INTO vacinacao (animal, vacina, data_vacinacao, data_aplicacao, proxima_dose, responsavel)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            animal,
+            nome_vacina,
+            data_vacinacao,
+            data_vacinacao,
+            proxima_dose,
+            responsavel,
+        ),
     )
     db.commit()
     return redirect(url_for("listagem"))
@@ -283,42 +330,79 @@ def listagem():
   db = get_db()
   cursor = db.cursor()
 
-  cursor.execute("SELECT * FROM lotes")
-  lotes = cursor.fetchall()
+  cursor.execute("SELECT * FROM animais")
+  animais = [dict(row) for row in cursor.fetchall()]
 
-  cursor.execute("""
-        SELECT v.*, vac.nome_vacina, l.nome as lote_nome 
-        FROM vacinacao v 
-        JOIN vacinas vac ON v.vacina_id = vac.id 
-        JOIN lotes l ON v.lote_id = l.id
-    """)
+  cursor.execute("SELECT * FROM lotes")
+  lotes = [dict(row) for row in cursor.fetchall()]
+
+  cursor.execute("SELECT * FROM vacinacao")
   vacinacoes = [dict(row) for row in cursor.fetchall()]
 
   for v in vacinacoes:
     v["status"] = status_vacina(v.get("proxima_dose"))
 
-  cursor.execute("""
-        SELECT m.*, l.nome as lote_nome 
-        FROM manejo_sanitario m 
-        JOIN lotes l ON m.lote_id = l.id
-    """)
-  manejos = cursor.fetchall()
-
   return render_template(
-      "listagem.html",
-      animais=lotes,
-      vacinacoes=vacinacoes,
-      manejos=manejos,
+      "listagem.html", animais=animais, vacinacoes=vacinacoes, lotes=lotes
   )
 
 
+# --- ROTAS DE AÇÃO (REMOÇÕES E ATUALIZAÇÕES) ---
+
+
+@app.route("/animais/remover/<int:id>", methods=["POST"])
+@login_required
+def remover_animal_route(id):
+  db = get_db()
+  cursor = db.cursor()
+  cursor.execute("DELETE FROM animais WHERE id = ?", (id,))
+  db.commit()
+  return redirect(url_for("listagem"))
+
+
+@app.route("/lotes/remover/<int:id>", methods=["POST"])
+@login_required
+def remover_lote_route(id):
+  db = get_db()
+  cursor = db.cursor()
+  cursor.execute("DELETE FROM lotes WHERE id = ?", (id,))
+  db.commit()
+  return redirect(url_for("listagem"))
+
+
+@app.route("/vacinacao/remover/<int:id>", methods=["POST"])
+@login_required
+def remover_vacinacao_route(id):
+  db = get_db()
+  cursor = db.cursor()
+  cursor.execute("DELETE FROM vacinacao WHERE id = ?", (id,))
+  db.commit()
+  return redirect(url_for("listagem"))
+
+
+# ROTA QUE FALTAVA PARA CORRIGIR O ERRO:
+@app.route("/vacinacao/atualizar/<int:id>", methods=["POST"])
+@login_required
+def atualizar_vacinacao_route(id):
+  proxima_dose = request.form.get("proxima_dose")
+  status = request.form.get("status")
+
+  db = get_db()
+  cursor = db.cursor()
+  cursor.execute(
+      """
+        UPDATE vacinacao 
+        SET proxima_dose = ?, status = ? 
+        WHERE id = ?
+    """,
+      (proxima_dose, status, id),
+  )
+  db.commit()
+  return redirect(url_for("listagem"))
+
+
 if __name__ == "__main__":
-  # Se o banco de dados não existir, cria e popula as tabelas com hash seguro
   if not os.path.exists(DATABASE):
     init_db()
-    print(
-        "Base de dados criada e populada com sucesso (com senhas em hash"
-        " seguro)!"
-    )
 
   app.run(debug=True)

@@ -1,140 +1,127 @@
 {% extends "base.html" %}
-
-{% block title %}Listagem{% endblock %}
-
 {% block content %}
+<div class="container" style="padding: 20px;">
 
-<h2>Animais cadastrados</h2>
+    <!-- TABELA 1: ANIMAIS CADASTRADOS -->
+    <h2 style="color: #2e7d32; font-weight: bold; margin-top: 10px;">Animais cadastrados</h2>
+    <div style="margin-bottom: 30px;">
+        <table class="styled-table" style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <thead>
+                <tr style="background-color: #2e7d32; color: white;">
+                    <th style="padding: 12px; text-align: left;">Identificação</th>
+                    <th style="padding: 12px; text-align: left;">Espécie</th>
+                    <th style="padding: 12px; text-align: left;">Raça</th>
+                    <th style="padding: 12px; text-align: left;">Data de nascimento</th>
+                    <th style="padding: 12px; text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for animal in animais %}
+                <tr style="background-color: #ffffff; border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">{{ animal.identificacao or '-' }}</td>
+                    <td style="padding: 12px;">{{ animal.especie or '-' }}</td>
+                    <td style="padding: 12px;">{{ animal.raca or '-' }}</td>
+                    <td style="padding: 12px;">{{ animal.data_nascimento or '-' }}</td>
+                    <td style="padding: 12px; text-align: center;">
+                        <form action="{{ url_for('remover_animal_route', id=animal.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" style="background-color: #2e7d32; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer;" onclick="return confirm('Tem certeza que deseja remover este animal?');">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr style="background-color: #ffffff;">
+                    <td style="padding: 12px;">Nenhum registro</td>
+                    <td style="padding: 12px;">-</td>
+                    <td style="padding: 12px;">-</td>
+                    <td style="padding: 12px;">-</td>
+                    <td style="padding: 12px; text-align: center;">-</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-<table>
+    <!-- TABELA 2: VACINAÇÕES REGISTRADAS -->
+    <h2 style="color: #2e7d32; font-weight: bold; margin-top: 30px;">Vacinações registradas</h2>
+    <div style="margin-bottom: 30px;">
+        <table class="styled-table" style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <thead>
+                <tr style="background-color: #2e7d32; color: white;">
+                    <th style="padding: 12px; text-align: left;">Animal</th>
+                    <th style="padding: 12px; text-align: left;">Vacina</th>
+                    <th style="padding: 12px; text-align: left;">Data da aplicação</th>
+                    <th style="padding: 12px; text-align: left;">Próxima dose</th>
+                    <th style="padding: 12px; text-align: left;">Status</th>
+                    <th style="padding: 12px; text-align: left;">Responsável</th>
+                    <th style="padding: 12px; text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vac in vacinacoes %}
+                <tr style="background-color: #ffffff; border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">{{ vac.animal or vac.lote_nome or '-' }}</td>
+                    <td style="padding: 12px;">{{ vac.vacina or vac.nome_vacina or '-' }}</td>
+                    <td style="padding: 12px;">{{ vac.data_aplicacao or vac.data_vacinacao or '-' }}</td>
+                    <td style="padding: 12px;">{{ vac.proxima_dose or '-' }}</td>
+                    <td style="padding: 12px;">
+                        {% if vac.status == 'atrasada' %}
+                            <span style="background-color: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 12px; font-size: 0.85em;">Atrasada</span>
+                        {% elif vac.status == 'hoje' %}
+                            <span style="background-color: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 12px; font-size: 0.85em;">Hoje</span>
+                        {% else %}
+                            <span style="background-color: #d4edda; color: #155724; padding: 4px 8px; border-radius: 12px; font-size: 0.85em;">Em dia</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px;">{{ vac.responsavel or '-' }}</td>
+                    <td style="padding: 12px; text-align: center;">
+                        <form action="{{ url_for('remover_vacinacao_route', id=vac.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" style="background-color: #2e7d32; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer;" onclick="return confirm('Tem certeza que deseja remover esta vacinação?');">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr style="background-color: #ffffff;">
+                    <td colspan="7" style="padding: 12px;">Nenhuma vacinação registrada</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <thead>
-        <tr>
-            <th>Identificação</th>
-            <th>Espécie</th>
-            <th>Raça</th>
-            <th>Data de nascimento</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
+    <!-- TABELA 3: LOTES REGISTADOS (Substitui os Manejos) -->
+    <h2 style="color: #2e7d32; font-weight: bold; margin-top: 30px;">Lotes Registados</h2>
+    <div style="margin-bottom: 30px;">
+        <table class="styled-table" style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <thead>
+                <tr style="background-color: #2e7d32; color: white;">
+                    <th style="padding: 12px; text-align: left;">Código do Lote</th>
+                    <th style="padding: 12px; text-align: left;">Qtd. Animais</th>
+                    <th style="padding: 12px; text-align: left;">Espécie</th>
+                    <th style="padding: 12px; text-align: left;">Data de Formação</th>
+                    <th style="padding: 12px; text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lote in lotes %}
+                <tr style="background-color: #ffffff; border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">{{ lote.codigo_lote or lote.nome or '-' }}</td>
+                    <td style="padding: 12px;">{{ lote.quantidade_animais or '-' }}</td>
+                    <td style="padding: 12px;">{{ lote.especie or lote.descricao or '-' }}</td>
+                    <td style="padding: 12px;">{{ lote.data_formacao or '-' }}</td>
+                    <td style="padding: 12px; text-align: center;">
+                        <form action="{{ url_for('remover_lote_route', id=lote.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" style="background-color: #2e7d32; color: white; border: none; padding: 6px 16px; border-radius: 4px; cursor: pointer;" onclick="return confirm('Tem certeza que deseja remover este lote?');">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr style="background-color: #ffffff;">
+                    <td colspan="5" style="padding: 12px;">Nenhum lote registrado</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <tbody>
-
-        {% if animais %}
-            {% for a in animais %}
-            <tr>
-                <td>{{ a.identificacao }}</td>
-                <td>{{ a.especie }}</td>
-                <td>{{ a.raca }}</td>
-                <td>{{ a.data_nascimento }}</td>
-                <td>
-                    <form action="{{ url_for('remover_animal_route', id=a.id) }}" method="POST" onsubmit="return confirm('Remover este animal?');" class="inline-form">
-                        <button type="submit" class="link-danger">Remover</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td>Nenhum registro</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-            </tr>
-        {% endif %}
-
-    </tbody>
-
-</table>
-
-<!-- ===================== INÍCIO: CONTROLE DE VACINAÇÃO (Guilherme) ===================== -->
-
-<h2>Vacinações registradas</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Animal</th>
-            <th>Vacina</th>
-            <th>Data da aplicação</th>
-            <th>Próxima dose</th>
-            <th>Status</th>
-            <th>Responsável</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% if vacinacoes %}
-            {% for v in vacinacoes %}
-            <tr>
-                <td>{{ v.animal }}</td>
-                <td>{{ v.vacina }}</td>
-                <td>{{ v.data_aplicacao }}</td>
-                <td>{{ v.proxima_dose }}</td>
-                <td>
-                    {% if v.status == "atrasada" %}
-                        <span class="badge badge-danger">Atrasada</span>
-                    {% elif v.status == "hoje" %}
-                        <span class="badge badge-warning">Vence hoje</span>
-                    {% elif v.status == "em_dia" %}
-                        <span class="badge badge-success">Em dia</span>
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>{{ v.responsavel }}</td>
-                <td><a href="{{ url_for('atualizar_vacinacao_route', id=v.id) }}">Editar</a></td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="7">Nenhuma vacinação registrada</td>
-            </tr>
-        {% endif %}
-    </tbody>
-</table>
-
-<!-- ===================== FIM: CONTROLE DE VACINAÇÃO ===================== -->
-
-
-
-
-
-
-<h2>Manejos Sanitários Registrados</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Animal</th>
-            <th>Tipo de Manejo</th>
-            <th>Data</th>
-            <th>Produto</th>
-            <th>Dose</th>
-            <th>Responsável</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% if manejos %}
-            {% for m in manejos %}
-            <tr>
-                <td>{{ m.animal }}</td>
-                <td>{{ m.tipo_manejo }}</td>
-                <td>{{ m.data_manejo }}</td>
-                <td>{{ m.produto }}</td>
-                <td>{{ m.dose }}</td>
-                <td>{{ m.responsavel }}</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="6">Nenhum manejo registrado</td>
-            </tr>
-        {% endif %}
-    </tbody>
-</table>
-
-<!-- ===================== FIM: CONTROLE DE REGISTROS ===================== -->
-
-
+</div>
 {% endblock %}
