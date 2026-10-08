@@ -1,96 +1,47 @@
-
 {% extends "base.html" %}
-
-{% block title %}Início{% endblock %}
-
 {% block content %}
+<div class="container" style="padding: 20px;">
 
-<section class="hero">
-
-    <div class="hero-content">
-
-        <span class="page-tag">
-            SISTEMA DE GESTÃO RURAL
+    <!-- CABEÇALHO / BOAS-VINDAS -->
+    <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px;">
+        <span style="background-color: #e8f5e9; color: #2e7d32; font-size: 0.8em; font-weight: bold; padding: 4px 10px; border-radius: 12px; text-transform: uppercase;">
+            Sistema de Gestão Rural
         </span>
-
-        <h2>
-            Controle sanitário<br>
-            da sua propriedade.
-        </h2>
-
-        <p>
-            Gerencie animais, acompanhe vacinações
-            e mantenha o histórico sanitário organizado
-            em um único sistema.
+        <h1 style="color: #1b5e20; margin-top: 15px; font-weight: bold;">Controle sanitário da sua propriedade.</h1>
+        <p style="color: #666; font-size: 1.05em; margin-bottom: 25px;">
+            Gerencie animais, acompanhe vacinações e mantenha o histórico sanitário organizado em um único sistema.
         </p>
+        
+        <!-- BOTOES DE AÇÃO RÁPIDA -->
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="{{ url_for('vacinacao') }}" style="background-color: #2e7d32; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">Registrar vacinação</a>
+            <a href="{{ url_for('cadastro') }}" style="background-color: transparent; color: #2e7d32; border: 1.5px solid #2e7d32; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">Cadastrar animal</a>
+            <a href="{{ url_for('lotes') }}" style="background-color: transparent; color: #2e7d32; border: 1.5px solid #2e7d32; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">Cadastrar lote</a>
+        </div>
+    </div>
 
-        <div class="hero-actions">
+    <!-- CARTÕES DE ESTATÍSTICAS (DINÂMICOS) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        
+        <!-- CARD 1: ANIMAIS -->
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <p style="color: #666; margin: 0 0 10px 0; font-size: 0.9em; font-weight: 500;">Animais</p>
+            <h2 style="color: #2e7d32; margin: 0; font-size: 2em; font-weight: bold;">{{ total_animais }}</h2>
+        </div>
 
-            <a
-                href="{{ url_for('vacinacao') }}"
-                class="button button-primary"
-            >
-                Registrar vacinação
-            </a>
+        <!-- CARD 2: VACINAÇÕES -->
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <p style="color: #666; margin: 0 0 10px 0; font-size: 0.9em; font-weight: 500;">Vacinações</p>
+            <h2 style="color: #2e7d32; margin: 0; font-size: 2em; font-weight: bold;">{{ total_vacinacoes }}</h2>
+        </div>
 
-            <a
-                href="{{ url_for('cadastro') }}"
-                class="button button-secondary"
-            >
-                Cadastrar animal
-            </a>
-
-            <a
-                href="{{ url_for('lotes') }}"
-                class="button button-secondary"
-            >
-                Cadastrar lote
-            </a>
-
+        <!-- CARD 3: LOTES -->
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <p style="color: #666; margin: 0 0 10px 0; font-size: 0.9em; font-weight: 500;">Lotes</p>
+            <h2 style="color: #2e7d32; margin: 0; font-size: 2em; font-weight: bold;">{{ total_lotes }}</h2>
         </div>
 
     </div>
 
-</section>
-
-
-<section class="dashboard">
-
-    <div class="dashboard-card">
-
-        <span class="dashboard-icon"></span>
-
-        <div>
-            <span>Animais</span>
-            <strong>0</strong>
-        </div>
-
-    </div>
-
-
-    <div class="dashboard-card">
-
-        <span class="dashboard-icon"></span>
-
-        <div>
-            <span>Vacinações</span>
-            <strong>0</strong>
-        </div>
-
-    </div>
-
-
-    <div class="dashboard-card">
-
-        <span class="dashboard-icon"></span>
-
-        <div>
-            <span>Registros</span>
-            <strong>0</strong>
-        </div>
-
-    </div>
-
-</section>
-
+</div>
 {% endblock %}

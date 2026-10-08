@@ -225,11 +225,38 @@ def logout():
 # --- ROTAS PRINCIPAIS ---
 
 
-@app.route("/")
+# --- ROTA PRINCIPAL (DASHBOARD) ---
+
+
+@app.route('/')
 @login_required
 def inicio():
-  return render_template("index.html")
+  db = get_db()
+  cursor = db.cursor()
 
+  # 1. Contar o número de animais
+  cursor.execute('SELECT COUNT(*) FROM animais')
+  total_animais = cursor.fetchone()[0]
+
+  # 2. Contar o número de vacinações
+  cursor.execute('SELECT COUNT(*) FROM vacinacao')
+  total_vacinacoes = cursor.fetchone()[0]
+
+  # 3. Contar o número de lotes
+  cursor.execute('SELECT COUNT(*) FROM lotes')
+  total_lotes = cursor.fetchone()[0]
+
+  # 4. Soma total de todos os registos do sistema
+  total_registros = total_animais + total_vacinacoes + total_lotes
+
+  # Enviar os dados contados para o template HTML
+  return render_template(
+      'index.html',
+      total_animais=total_animais,
+      total_vacinacoes=total_vacinacoes,
+      total_lotes=total_lotes,
+      total_registros=total_registros,
+  )
 
 @app.route("/lotes", methods=["GET", "POST"])
 @login_required
